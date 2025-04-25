@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { Source_Sans_3 as FontSans } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 
 const fontSans = FontSans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900"]
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
-
 
 export const metadata: Metadata = {
   title: "SummarizeIQ - AI-Powerd PDF Summarization",
-  description: "Save hours of time. Transform lengthy PDFs into clear, accurate summaries in seconds with our advanced AI technology",
+  description:
+    "Save hours of time. Transform lengthy PDFs into clear, accurate summaries in seconds with our advanced AI technology",
 };
 
 export default function RootLayout({
@@ -21,10 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${fontSans.variable} ${fontSans} antialiased`}
-      >
-        {children}
+      <body className={`${fontSans.variable} ${fontSans} antialiased`}>
+        <div className="relative flex min-h-screen flex-col">
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
