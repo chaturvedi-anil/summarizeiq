@@ -1,6 +1,6 @@
 import { FileText } from "lucide-react";
 import { Button } from "../ui/button";
-import { NavLink } from "./Nav-link";
+import { NavLink } from "./Navlink";
 
 export default function Header() {
   const isLoggedIn = false;
