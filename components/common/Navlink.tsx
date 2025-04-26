@@ -20,7 +20,7 @@ export const NavLink = ({
   return (
     <Link
       className={cn(
-        "transitions-colors text-sm duration-200 text-gray-600 hover:text-red-500",
+        "transitions-colors text-md duration-200 text-gray-600 hover:text-red-500",
         className,
         isActive && "text-rose-500"
       )}
