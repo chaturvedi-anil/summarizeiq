@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = FontSans({
   variable: "--font-sans",
@@ -31,6 +32,19 @@ export default function RootLayout({
             <main>{children}</main>
             <Footer />
           </div>
+          <Toaster
+            position="top-right"
+            richColors
+            expand={true}
+            duration={5000}
+            closeButton={true}
+            toastOptions={{
+              style: {
+                padding: "16px",
+                fontSize: "16px",
+              },
+            }}
+          />
         </body>
       </html>
     </ClerkProvider>

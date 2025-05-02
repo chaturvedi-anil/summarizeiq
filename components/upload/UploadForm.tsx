@@ -4,7 +4,7 @@ import React from "react";
 import { z } from "zod";
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./UploadFormInput";
-import { error, log } from "console";
+import { toast } from "sonner";
 
 const schema = z.object({
   file: z
@@ -21,42 +21,48 @@ const schema = z.object({
 export default function UploadForm() {
   const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
     onClientUploadComplete: () => {
-      console.log("uploaded successfully!");
+      toast.success("Uploaded successfully!");
     },
     onUploadError: (error) => {
-      console.log("error occurred while uploading : ", error);
+      toast.error("Error occurred while uploading", {
+        description: error.message,
+      });
     },
     onUploadBegin: ({ file }) => {
-      console.log("upload has begun for", file);
+      toast.info(`Uploading ${file}`);
     },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("submitted");
     const formData = new FormData(e.currentTarget);
     const file = formData.get("file") as File;
 
     // Validation the fields
     // schema with zod
     const validatedFields = schema.safeParse({ file });
-    console.log("validatedFields : ", validatedFields);
 
     if (!validatedFields.success) {
-      alert(
-        `${
-          validatedFields.error.flatten().fieldErrors.file?.[0] ??
-          "Invalid file"
-        }`
-      );
+      toast.error("Something went wrong", {
+        description:
+          validatedFields.error.flatten().fieldErrors.file?.[0] ?? "Invalid",
+      });
+
       return;
     }
+
+    toast.info("Processing PDF", {
+      description: "Hang tight! Our AI is reading through your document! ",
+    });
     // upload the file to uploadthink
 
     const resp = await startUpload([file]);
 
     if (!resp) {
+      toast.error("Something went wrong!", {
+        description: "Please use different file1!",
+      });
       return;
     }
 
