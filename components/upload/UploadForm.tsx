@@ -5,10 +5,11 @@ import { z } from "zod";
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./UploadFormInput";
 import { toast } from "sonner";
+import { generatePdfSummary } from "@/actions/uploadActions";
 
 const schema = z.object({
   file: z
-    .instanceof(File, { message: "Invalind file" })
+    .instanceof(File, { message: "Invalid file" })
     .refine((file) => file.size <= 20 * 1024 * 1024, {
       message: "File size must be less than 20MB",
     })
@@ -29,7 +30,7 @@ export default function UploadForm() {
       });
     },
     onUploadBegin: ({ file }) => {
-      toast.info(`Uploading ${file}`);
+      // toast.info(`Uploading ${file}`)
     },
   });
 
@@ -52,8 +53,8 @@ export default function UploadForm() {
       return;
     }
 
-    toast.info("Processing PDF", {
-      description: "Hang tight! Our AI is reading through your document! ",
+    toast.info("Uploading PDF...", {
+      description: "We are uploading your pdf!",
     });
     // upload the file to uploadthink
 
@@ -66,7 +67,12 @@ export default function UploadForm() {
       return;
     }
 
+    toast.info("Processing PDF", {
+      description: "Hang tight! Our AI is reading through your document! ",
+    });
     // parse the pdf using langchain
+    const summary = await generatePdfSummary(resp);
+    console.log({ summary });
     // summarize the pdf using ai
     // save the summary to the database
     // re direct to the[id] summary page
