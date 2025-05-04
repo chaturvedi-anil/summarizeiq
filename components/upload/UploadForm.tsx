@@ -89,6 +89,10 @@ export default function UploadForm() {
 
         // reseting the form
         formRef.current?.reset();
+
+        if (data.summary) {
+          // save the summary in db
+        }
       }
       // summarize the pdf using ai
       // save the summary to the database

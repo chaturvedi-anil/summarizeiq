@@ -1,5 +1,6 @@
 "use server";
 
+import { generateSummaryFromGemini } from "@/lib/geminiai";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 import { generateSummaryFromOpenAI } from "@/lib/openai";
 
@@ -41,15 +42,30 @@ export async function generatePdfSummary(
 
   try {
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
-    console.log({ pdfText });
 
     let summary;
     try {
+      console.log("try block summary handle");
+
       summary = await generateSummaryFromOpenAI(pdfText);
-      console.log({ summary });
-      return summary;
+      return {
+        success: true,
+        messsage: "PDF summary generated successfully!",
+        data: { summary },
+      };
     } catch (error) {
-      //
+      console.log("Error in OpenAI : ", error);
+
+      if (error) {
+        try {
+          summary = await generateSummaryFromGemini(pdfText);
+        } catch (geminiError) {
+          console.error("geminiError : ", geminiError);
+          throw new Error(
+            "Failed to generate summary with available AI providers"
+          );
+        }
+      }
     }
 
     if (!summary) {
@@ -59,6 +75,14 @@ export async function generatePdfSummary(
         data: null,
       };
     }
+
+    return {
+      success: true,
+      messsage: "Summary generated successfully!",
+      data: {
+        summary: summary,
+      },
+    };
   } catch (error) {
     return {
       success: false,
