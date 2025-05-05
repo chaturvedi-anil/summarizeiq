@@ -91,3 +91,17 @@ export async function generatePdfSummary(
     };
   }
 }
+
+export async function storePdfSummaryAction() {
+  // user is logged in and has a userId
+  // savePdf Summary
+
+  try {
+  } catch (error) {
+    return {
+      success: false,
+      messsage:
+        error instanceof Error ? error.message : "Error saving PDF summary",
+    };
+  }
+}
