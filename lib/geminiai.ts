@@ -5,7 +5,7 @@ const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 export const generateSummaryFromGemini = async (pdfText: string) => {
   try {
     const model = await genAi.getGenerativeModel({
-      model: "gemini-2.0-flash-001",
+      model: "gemini-1.5-pro-002",
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 1500,
@@ -26,14 +26,12 @@ export const generateSummaryFromGemini = async (pdfText: string) => {
       ],
     };
     const result = await model.generateContent(prompt);
-    console.log("gemini model result : ", result);
 
     const response = await result.response;
 
     if (!response.text()) {
       throw new Error("Empty response from Gemini API");
     }
-    console.log("gemini Respones : ", response);
 
     return response.text();
   } catch (error: any) {

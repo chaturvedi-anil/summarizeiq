@@ -5,7 +5,10 @@ import { z } from "zod";
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./UploadFormInput";
 import { toast } from "sonner";
-import { generatePdfSummary } from "@/actions/uploadActions";
+import {
+  generatePdfSummary,
+  storePdfSummaryAction,
+} from "@/actions/uploadActions";
 
 const schema = z.object({
   file: z
@@ -83,15 +86,26 @@ export default function UploadForm() {
       const { data = null, message = null } = result || {};
 
       if (data) {
+        let storeResult: any;
         toast.info("Saving PDF...", {
           description: "Hang tight! We are saving your summary! ",
         });
 
-        // reseting the form
-        formRef.current?.reset();
-
         if (data.summary) {
+          storeResult = await storePdfSummaryAction({
+            summary: data.summary,
+            fileUrl: resp[0].serverData?.file?.url,
+            title: data.title,
+            fileName: data.title,
+          });
           // save the summary in db
+
+          toast.success("Summary Generated!", {
+            description: "Your summary has been saved!",
+          });
+
+          // reseting the form
+          formRef.current?.reset();
         }
       }
       // summarize the pdf using ai
