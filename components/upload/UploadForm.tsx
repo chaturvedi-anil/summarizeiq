@@ -9,6 +9,7 @@ import {
   generatePdfSummary,
   storePdfSummaryAction,
 } from "@/actions/uploadActions";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   file: z
@@ -25,6 +26,7 @@ const schema = z.object({
 export default function UploadForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
     onClientUploadComplete: () => {
@@ -106,6 +108,8 @@ export default function UploadForm() {
 
           // reseting the form
           formRef.current?.reset();
+
+          router.push(`/summaries/${storeResult.data.id}`);
         }
       }
       // summarize the pdf using ai
@@ -115,6 +119,8 @@ export default function UploadForm() {
       setIsLoading(false);
       console.error(`Error occur : `, error);
       formRef.current?.reset();
+    } finally {
+      setIsLoading(false);
     }
   };
 
