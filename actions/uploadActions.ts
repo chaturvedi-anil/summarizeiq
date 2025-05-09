@@ -32,7 +32,7 @@ export async function generatePdfSummary(
   if (!uploadResponse) {
     return {
       success: false,
-      messsage: "File upload failed",
+      message: "File upload failed",
       data: null,
     };
   }
@@ -57,8 +57,6 @@ export async function generatePdfSummary(
 
     let summary;
     try {
-      console.log("try block summary handle");
-
       summary = await generateSummaryFromOpenAI(pdfText);
       return {
         success: true,
@@ -68,22 +66,20 @@ export async function generatePdfSummary(
     } catch (error) {
       console.log("Error in OpenAI : ", error);
 
-      if (error) {
-        try {
-          summary = await generateSummaryFromGemini(pdfText);
-        } catch (geminiError) {
-          console.error("geminiError : ", geminiError);
-          throw new Error(
-            "Failed to generate summary with available AI providers"
-          );
-        }
+      try {
+        summary = await generateSummaryFromGemini(pdfText);
+      } catch (geminiError) {
+        console.error("geminiError : ", geminiError);
+        throw new Error(
+          "Failed to generate summary with available AI providers"
+        );
       }
     }
 
     if (!summary) {
       return {
         success: false,
-        messsage: "Failed to generate summary!",
+        message: "Failed to generate summary!",
         data: null,
       };
     }
@@ -115,7 +111,7 @@ export async function savePdfSummary({
 }: PDFSummaryType) {
   try {
     const sql = await getDbConnection();
-    await sql`
+    const result = await sql`
       INSERT INTO pdf_summaries (
         user_id,
         original_file_url,
@@ -130,6 +126,8 @@ export async function savePdfSummary({
         ${fileName}
       )
     `;
+
+    return result[0];
   } catch (error: any) {
     console.error("❌ Error saving PDF summary:", error);
     throw new Error("Failed to save PDF summary.");
@@ -141,8 +139,6 @@ export async function storePdfSummaryAction({
   title,
   fileName,
 }: PDFSummaryType) {
-  // user is logged in and has a userId
-  // savePdf Summary
   let savedSummary: any;
   try {
     const { userId } = await auth();
@@ -171,7 +167,7 @@ export async function storePdfSummaryAction({
   } catch (error) {
     return {
       success: false,
-      messsage:
+      message:
         error instanceof Error ? error.message : "Error saving PDF summary",
     };
   }
