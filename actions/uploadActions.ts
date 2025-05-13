@@ -1,6 +1,6 @@
 "use server";
 
-import { getDbConnection } from "@/lib/db";
+import { prisma } from "@/lib/prisma"; // ✅ Imported Prisma Client
 import { generateSummaryFromGemini } from "@/lib/geminiai";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 import { generateSummaryFromOpenAI } from "@/lib/openai";
@@ -9,7 +9,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 type PDFSummaryType = {
-  userId?: string;
+  userId: string;
   fileUrl: string;
   summary: string;
   title: string;
@@ -110,29 +110,24 @@ export async function savePdfSummary({
   fileName,
 }: PDFSummaryType) {
   try {
-    const sql = await getDbConnection();
-    const result = await sql`
-      INSERT INTO pdf_summaries (
-        user_id,
-        original_file_url,
-        summary_text,
+    // ✅ Replaced raw SQL with Prisma create
+    const result = await prisma.pdfSummary.create({
+      data: {
+        userId: userId,
+        originalFileUrl: fileUrl,
+        summaryText: summary,
         title,
-        file_name
-      ) VALUES (
-        ${userId},
-        ${fileUrl},
-        ${summary},
-        ${title},
-        ${fileName}
-      )
-    `;
+        fileName: fileName,
+      },
+    });
 
-    return result[0];
+    return result;
   } catch (error: any) {
     console.error("❌ Error saving PDF summary:", error);
     throw new Error("Failed to save PDF summary.");
   }
 }
+
 export async function storePdfSummaryAction({
   fileUrl,
   summary,
