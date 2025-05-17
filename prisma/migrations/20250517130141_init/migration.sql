@@ -1,42 +1,42 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" UUID NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "fullName" VARCHAR(255),
-    "customerId" VARCHAR(255),
-    "priceId" VARCHAR(255),
-    "status" VARCHAR(50) NOT NULL DEFAULT 'inactive',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fullName" TEXT,
+    "customerId" TEXT,
+    "priceId" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'inactive',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "PdfSummary" (
-    "id" UUID NOT NULL,
-    "userId" VARCHAR(255) NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "originalFileUrl" TEXT NOT NULL,
     "summaryText" TEXT NOT NULL,
-    "status" VARCHAR(50) NOT NULL DEFAULT 'completed',
+    "status" TEXT NOT NULL DEFAULT 'completed',
     "title" TEXT,
     "fileName" TEXT,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "PdfSummary_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Payment" (
-    "id" UUID NOT NULL,
+    "id" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
-    "status" VARCHAR(50) NOT NULL,
-    "stripePaymentId" VARCHAR(255) NOT NULL,
-    "priceId" VARCHAR(255) NOT NULL,
-    "userEmail" VARCHAR(255) NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "status" TEXT NOT NULL,
+    "stripePaymentId" TEXT NOT NULL,
+    "priceId" TEXT NOT NULL,
+    "userEmail" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
